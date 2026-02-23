@@ -5,7 +5,7 @@ export default function GuestNavLink() {
     return (
         <>
             <Nav.Link href="/login">로그인</Nav.Link>
-            <Nav.Link href="/register">회원가입</Nav.Link>
+            <Nav.Link href="/register">관리자등록</Nav.Link>
         </>
     )
 }

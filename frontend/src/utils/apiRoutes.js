@@ -27,14 +27,14 @@ const apiRoutes = {
         checkUserId: (userId) => ({url: `${BASE_URL}/users/id-dupl-check?userId=${userId}`, method: "GET"}),
 
         /**
-         * 회원가입 API<br>
+         * 관리자등록 API<br>
          * POST /api/user<br>
          * body: {UserInsertDTO}
          */
         register: {url: `${BASE_URL}/users`, method: "POST"},
 
         /**
-         * 회원탈퇴 API<br>
+         * 관리자삭제 API<br>
          * PATCH /api/users<br>
          * body: {UserPatchDTO}
          */

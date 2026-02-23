@@ -42,6 +42,10 @@ public class FarmHouse {
     @Column(nullable = false)
     private boolean mnulCtrlFlag = false; // 릴레이 수동 조작 여부
 
+    @Setter
+    @Column(columnDefinition = "VARCHAR(20) DEFAULT 'algorithm'")
+    private String ctrlType = "algorithm"; // 제어 유형 (algorithm, ai)
+
     @Column(nullable = false, columnDefinition = "TIMESTAMP(6) WITHOUT TIME ZONE")
     private LocalDateTime rgstDttm = LocalDateTime.now(); // 등록일자
 }

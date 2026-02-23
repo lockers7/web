@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useSelector, useDispatch} from "react-redux";
-import {BrowserRouter} from "react-router-dom";
+import {BrowserRouter, useLocation} from "react-router-dom";
 
 import Header from "./pages/common/Header.jsx";
 import Footer from "./pages/common/Footer.jsx";
@@ -12,10 +12,35 @@ import GuestRoutes from "./routes/GuestRoutes.jsx";
 import FarmAdminRoutes from "./routes/FarmAdminRoutes.jsx";
 import MonitorRoutes from "./routes/MonitorRoutes.jsx";
 
+function AppLayout() {
+    const auth = useSelector(state => state.auth);
+    const location = useLocation();
+    const hideFooter = location.pathname === "/ai-chat";
+
+    return (
+        <div className="d-flex flex-column min-vh-100">
+            <Header/>
+
+            <div className="flex-grow-1 mt-5 overflow-x-hidden">
+                {!auth.token ? (
+                    <GuestRoutes/>
+                ) : auth.userInfo.authLvel === "ADMIN" ? (
+                    <AdminRoutes/>
+                ) : auth.userInfo.authLvel === "FARM_ADMIN" ? (
+                    <FarmAdminRoutes/>
+                ) : (
+                    <MonitorRoutes/>
+                )}
+            </div>
+
+            {!hideFooter && <Footer/>}
+        </div>
+    );
+}
+
 export default function App() {
     // 인증 정보 관리
     const dispatch = useDispatch();
-    const auth = useSelector(state => state.auth);
 
     const [isLoading, setIsLoading] = useState(true);
 
@@ -45,23 +70,7 @@ export default function App() {
 
     return (
         <BrowserRouter>
-            <div className="d-flex flex-column min-vh-100">
-                <Header/>
-
-                <div className="flex-grow-1 mt-5 overflow-x-hidden">
-                    {!auth.token ? (
-                        <GuestRoutes/>
-                    ) : auth.userInfo.authLvel === "ADMIN" ? (
-                        <AdminRoutes/>
-                    ) : auth.userInfo.authLvel === "FARM_ADMIN" ? (
-                        <FarmAdminRoutes/>
-                    ) : (
-                        <MonitorRoutes/>
-                    )}
-                </div>
-
-                <Footer/>
-            </div>
+            <AppLayout/>
         </BrowserRouter>
     )
 }

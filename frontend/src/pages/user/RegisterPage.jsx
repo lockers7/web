@@ -1,5 +1,5 @@
-import {useRef, useState} from "react";
-import {Form, Button, Card, Container, InputGroup} from "react-bootstrap";
+import {useState} from "react";
+import {Form, Button, Card, Container} from "react-bootstrap";
 import LabeledInput from "../../components/form/LabeledInput";
 import {idDuplCheck, registerUser} from "../../utils/userUtil.js";
 import {useNavigate} from "react-router-dom";
@@ -63,12 +63,12 @@ function RegisterPage() {
 
     return (
         <Container className="d-flex justify-content-center align-items-center flex-grow-1">
-            <Card className="p-4 m-5" style={{width: "800px"}}>
-                <Form className="p-4" onSubmit={handleSubmit}>
-                    <h2 className="mb-4">회원가입</h2>
+            <Card className="p-4 m-5" style={{width: "480px", borderWidth: "2px"}}>
+                <Form className="p-3" onSubmit={handleSubmit}>
+                    <h2 className="mb-4 text-center">관리자등록</h2>
 
-                    {/* 아이디 입력 + 중복체크 버튼 */}
                     <RegisterIdInput
+                        smLabel={4}
                         value={form.userId}
                         onChange={formHandleChange}
                         onClick={handleCheck}
@@ -77,6 +77,7 @@ function RegisterPage() {
                     />
 
                     <LabeledInput
+                        smLabel={4}
                         label="비밀번호"
                         type="password"
                         name="passwd"
@@ -86,9 +87,9 @@ function RegisterPage() {
                         pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,30}$"
                         errorMsg="영문, 숫자, 특수문자가 1개 이상 들어간 8~30자로 입력해주세요."
                         required
-                        // 8-30자, 영문+숫자+특수문자 포함
                     />
                     <LabeledInput
+                        smLabel={4}
                         label="비밀번호 확인"
                         type="password"
                         name="confirmPasswd"
@@ -98,9 +99,9 @@ function RegisterPage() {
                         pattern={form.passwd}
                         errorMsg="입력된 비밀번호와 다릅니다."
                         required
-                        // confirm는 폼 검증 외에도 handleSubmit에서 직접 체크 필요
                     />
                     <LabeledInput
+                        smLabel={4}
                         label="이름"
                         name="userName"
                         value={form.userName}
@@ -109,9 +110,9 @@ function RegisterPage() {
                         pattern="^[가-힣a-zA-Z]{2,20}$"
                         errorMsg="한글, 영문으로 이루어진 2~20자로 입력해주세요."
                         required
-                        // 한글/영문, 2~20자
                     />
                     <LabeledPhoneInput
+                        smLabel={4}
                         label="휴대폰번호"
                         name="hpNo"
                         value={form.hpNo}
@@ -119,6 +120,7 @@ function RegisterPage() {
                         required
                     />
                     <LabeledInput
+                        smLabel={4}
                         label="직위"
                         name="pstn"
                         value={form.pstn}
@@ -127,10 +129,9 @@ function RegisterPage() {
                         pattern="^[a-zA-Z가-힣]*$"
                         errorMsg="한글, 영문으로 입력해주세요."
                         required
-                        // 일반 이메일 패턴
                     />
 
-                    <Button type="submit" variant="success" className="w-100 mt-3">회원가입</Button>
+                    <Button type="submit" variant="success" className="w-100 mt-3">관리자등록</Button>
                 </Form>
             </Card>
         </Container>

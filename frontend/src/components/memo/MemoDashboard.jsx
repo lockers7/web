@@ -141,10 +141,17 @@ export default function MemoDashboard({farmId, houseId}) {
                     <Form onSubmit={handleAddMemo}>
                         <InputGroup>
                             <Form.Control
-                                type="text"
-                                placeholder="새 메모 입력..."
+                                as="textarea"
+                                rows={2}
+                                placeholder="새 메모 입력... (Shift+Enter: 줄바꿈, Enter: 전송)"
                                 value={newMemo}
                                 onChange={(e) => setNewMemo(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter" && !e.shiftKey) {
+                                        e.preventDefault();
+                                        handleAddMemo(e);
+                                    }
+                                }}
                             />
                             <Button type="submit" variant="success">
                                 추가

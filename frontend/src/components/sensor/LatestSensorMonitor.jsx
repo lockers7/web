@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from "react";
 import LatestSensorItem from "./LatestSensorItem.jsx";
 
-export default function LatestSensorMonitor({latestSensorData, houses, setSelectedHouse, selectedHouse}) {
+export default function LatestSensorMonitor({latestSensorData, houses, setSelectedHouse, selectedHouse, farmId}) {
     const scrollRef = useRef(null);
 
     useEffect(() => {
@@ -31,6 +31,7 @@ export default function LatestSensorMonitor({latestSensorData, houses, setSelect
                     house={house}
                     setSelectedHouse={setSelectedHouse}
                     selectedHouse={selectedHouse}
+                    farmId={farmId}
                 />
             )
         })
@@ -41,16 +42,18 @@ export default function LatestSensorMonitor({latestSensorData, houses, setSelect
             {latestSensorData && (
                 <div style={{position: "relative", overflowX: "auto"}}
                      ref={scrollRef}>
-                    <table className="table table-bordered mb-0 text-center"
+                    <table className="table table-bordered mb-0 text-center sensor-table"
                            style={{
                                minWidth: "800px",
                                tableLayout: "auto",
                                verticalAlign: "middle",
-                               borderCollapse: "collapse"
+                               borderCollapse: "collapse",
+                               fontSize: "150%"
                            }}>
                         <thead>
                         <tr>
                             <th>재배사</th>
+                            <th>운용방식</th>
                             <th>실내 온도</th>
                             <th>실외 온도</th>
                             <th>실내 습도</th>

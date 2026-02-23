@@ -55,12 +55,13 @@ export default function FarmRegisterPage() {
 
     return (
         <Container className="d-flex justify-content-center align-items-center flex-grow-1">
-            <Card className="p-4 m-5" style={{width: "800px"}}>
+            <Card className="p-4 m-5" style={{width: "800px", borderWidth: "2px"}}>
                 <Form className="p-4" onSubmit={handleSubmit}>
-                    <h2 className="mb-4">농장등록</h2>
+                    <h2 className="mb-4 text-center">농장등록</h2>
 
                     <LabeledInput
                         label="농장 이름"
+                        smInput={5}
                         name="farmName"
                         value={form.farmName}
                         onChange={handleChange}
@@ -71,6 +72,7 @@ export default function FarmRegisterPage() {
                     />
                     <LabeledInput
                         label="농장 도메인"
+                        smInput={5}
                         name="farmDomi"
                         value={form.farmDomi}
                         onChange={handleChange}
@@ -81,6 +83,7 @@ export default function FarmRegisterPage() {
                     />
                     <LabeledInput
                         label="개업일자"
+                        smInput={5}
                         type="date"
                         name="openDate"
                         value={form.openDate}
@@ -89,6 +92,7 @@ export default function FarmRegisterPage() {
                     />
                     <LabeledPhoneInput
                         label="대표번호"
+                        smInput={5}
                         name="telNo"
                         value={form.telNo}
                         onChange={handleChange}
@@ -96,6 +100,7 @@ export default function FarmRegisterPage() {
                     />
                     <LabeledPhoneInput
                         label="전화번호"
+                        smInput={5}
                         name="hpNo"
                         value={form.hpNo}
                         placeholder="063-1234-5678"
@@ -103,6 +108,7 @@ export default function FarmRegisterPage() {
                     />
                     <LabeledPhoneInput
                         label="팩스번호"
+                        smInput={5}
                         name="faxNo"
                         value={form.faxNo}
                         placeholder="063-1234-5678"
@@ -110,6 +116,7 @@ export default function FarmRegisterPage() {
                     />
                     <LabeledInput
                         label="대표메일"
+                        smInput={5}
                         type="email"
                         name="mail"
                         value={form.mail}
@@ -118,6 +125,7 @@ export default function FarmRegisterPage() {
                     />
                     <LabeledInput
                         label="농장 IP"
+                        smInput={5}
                         name="ipAddr"
                         value={form.ipAddr}
                         onChange={handleChange}
@@ -126,6 +134,7 @@ export default function FarmRegisterPage() {
                     />
                     <LabeledInput
                         label="농장 포트"
+                        smInput={5}
                         name="port"
                         value={form.port}
                         onChange={handleChange}
@@ -144,6 +153,7 @@ export default function FarmRegisterPage() {
                     />
                     <LabeledSelect
                         label="주요 작물"
+                        smInput={5}
                         name="mainPrdt"
                         placeholder="주요 작물 선택"
                         option={[
@@ -155,6 +165,7 @@ export default function FarmRegisterPage() {
                     />
                     <LabeledInput
                         label="농장 설명"
+                        smInput={5}
                         name="rmks"
                         value={form.rmks}
                         onChange={handleChange}

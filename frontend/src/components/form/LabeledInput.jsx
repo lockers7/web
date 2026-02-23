@@ -1,7 +1,7 @@
 import {Form, Row, Col} from "react-bootstrap";
 import {useEffect, useState} from "react";
 
-export default function LabeledInput({label, name, smLabel = 2, errorMsg, value, pattern, required = false, ...props}) {
+export default function LabeledInput({label, name, smLabel = 2, smInput, errorMsg, value, pattern, required = false, ...props}) {
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -24,7 +24,7 @@ export default function LabeledInput({label, name, smLabel = 2, errorMsg, value,
                 {label} {required && <span style={{color: "red"}}>*</span>}
             </Form.Label>
 
-            <Col sm={12 - smLabel}>
+            <Col sm={smInput || (12 - smLabel)}>
                 <Form.Control
                     name={name}
                     value={value}

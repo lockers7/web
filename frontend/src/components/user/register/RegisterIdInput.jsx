@@ -1,13 +1,12 @@
-import {Button, Form, InputGroup} from "react-bootstrap";
+import {Button, Col, Form, InputGroup, Row} from "react-bootstrap";
 
-export default function RegisterIdInput({value, onChange, onClick, required = false, isAvailable}) {
+export default function RegisterIdInput({value, onChange, onClick, smLabel = 4, required = false, isAvailable}) {
     return (
-        <>
-            {/* 아이디 입력 + 중복체크 버튼 */}
-            <Form.Group className="mb-3">
-                <Form.Label column={true}>
-                    아이디 {required && <span style={{color: "red"}}>*</span>}
-                </Form.Label>
+        <Form.Group as={Row} className="mb-3" controlId="formUserId">
+            <Form.Label column sm={smLabel}>
+                아이디 {required && <span style={{color: "red"}}>*</span>}
+            </Form.Label>
+            <Col sm={12 - smLabel}>
                 <InputGroup>
                     <Form.Control
                         name="userId"
@@ -24,7 +23,7 @@ export default function RegisterIdInput({value, onChange, onClick, required = fa
                         {!isAvailable ? "사용 가능한 아이디입니다." : "이미 사용 중인 아이디입니다."}
                     </Form.Text>
                 )}
-            </Form.Group>
-        </>
+            </Col>
+        </Form.Group>
     );
 }

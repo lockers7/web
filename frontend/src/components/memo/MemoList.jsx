@@ -34,9 +34,10 @@ export default function MemoList({
                             </div>
 
                             {editingId === memo.recdDttm ? (
-                                <div className="d-flex align-items-center">
+                                <div className="d-flex align-items-start">
                                     <Form.Control
-                                        type="text"
+                                        as="textarea"
+                                        rows={3}
                                         value={editText}
                                         onChange={(e) => setEditText(e.target.value)}
                                         className="me-2"
@@ -63,7 +64,7 @@ export default function MemoList({
                             ) : (
                                 memo.athr === auth.userInfo.userId || auth.userInfo.authLvel === "ADMIN" ? (
                                     <div className="d-flex justify-content-between align-items-center">
-                                        <span>{memo.rmks}</span>
+                                        <span style={{whiteSpace: "pre-wrap"}}>{memo.rmks}</span>
                                         <div>
                                             <OverlayTrigger
                                                 placement="top"
@@ -97,7 +98,7 @@ export default function MemoList({
                                     </div>
                                 ) : (
                                     <div className="d-flex justify-content-between align-items-center">
-                                        <span>{memo.rmks}</span>
+                                        <span style={{whiteSpace: "pre-wrap"}}>{memo.rmks}</span>
                                     </div>
                                 ))}
                         </ListGroup.Item>

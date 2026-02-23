@@ -14,6 +14,13 @@ export default function Header() {
         <Navbar bg="light" variant="white" fixed="top">
             <Container>
                 <Navbar.Brand as={Link} to="/">Jayeondeule</Navbar.Brand>
+                {auth.token != null && (
+                    <Nav className="me-auto">
+                        <Nav.Link as={Link} to="/ai-chat" style={{fontWeight: "bold"}}>AI 채팅</Nav.Link>
+                    </Nav>
+                )}
+                {/* 페이지별 액션 버튼 슬롯 (AiChatPage에서 Portal로 RAG 버튼 렌더링) */}
+                <div id="header-actions" style={{display: "flex", gap: "8px", alignItems: "center", marginRight: "auto"}} />
                 <Nav className="ms-auto">
                     {auth.token != null ? (
                         <>

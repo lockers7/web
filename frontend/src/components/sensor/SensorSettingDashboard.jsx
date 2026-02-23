@@ -4,6 +4,10 @@ import {Dash} from "react-bootstrap-icons";
 import {deleteSetting, getSettings, insertSettings, patchSetting} from "../../utils/settingUtil.js";
 import AlertModal from "../common/AlertModal.jsx";
 
+const compactInput = { maxWidth: "100px" };
+const labelStyle  = { minWidth: "110px", fontWeight: "bold", marginBottom: 0, whiteSpace: "nowrap" };
+const greenCard   = { backgroundColor: "#fff", border: "2px solid #28a745" };
+
 export default function SensorSettingDashboard({farmId, selectedHouse}) {
     const [show, setShow] = useState(false);
 
@@ -103,180 +107,127 @@ export default function SensorSettingDashboard({farmId, selectedHouse}) {
 
     return (
         <div className="p-3">
-            <Card className="mb-3 p-3">
-                <h5>온도(℃)</h5>
-                <Row className="mb-2">
-                    <Col>
-                        <InputGroup>
-                            <Form.Control
-                                value={sensorSetting && sensorSetting.tprtMin}
-                                onChange={(e) => handleSensorSettingChange("tprtMin", e.target.value)}
-                                onBlur={handleSensorSettingInsert}
-                                type="number"
-                                placeholder="최소 온도"
-                            />
-                            <InputGroup.Text>~</InputGroup.Text>
-                            <Form.Control
-                                value={sensorSetting && sensorSetting.tprtMax}
-                                onChange={(e) => handleSensorSettingChange("tprtMax", e.target.value)}
-                                onBlur={handleSensorSettingInsert}
-                                type="number"
-                                placeholder="최대 온도"
-                            />
-                        </InputGroup>
-                    </Col>
-                </Row>
-                <h5>수온(℃)</h5>
-                <Row className="mb-2">
-                    <Col>
-                        <InputGroup>
-                            <Form.Control
-                                value={sensorSetting && sensorSetting.watrTprtMin}
-                                onChange={(e) => handleSensorSettingChange("watrTprtMin", e.target.value)}
-                                onBlur={handleSensorSettingInsert}
-                                type="number"
-                                placeholder="최소 수온"
-                            />
-                            <InputGroup.Text>~</InputGroup.Text>
-                            <Form.Control
-                                value={sensorSetting && sensorSetting.watrTprtMax}
-                                onChange={(e) => handleSensorSettingChange("watrTprtMax", e.target.value)}
-                                onBlur={handleSensorSettingInsert}
-                                type="number"
-                                placeholder="최대 수온"
-                            />
-                        </InputGroup>
-                    </Col>
-                </Row>
-                <h5>습도(%)</h5>
-                <Row className="mb-2">
-                    <Col>
-                        <InputGroup>
-                            <Form.Control
-                                value={sensorSetting && sensorSetting.hmdtMin}
-                                onChange={(e) => handleSensorSettingChange("hmdtMin", e.target.value)}
-                                onBlur={handleSensorSettingInsert}
-                                type="number"
-                                placeholder="최소 습도"
-                            />
-                            <InputGroup.Text>~</InputGroup.Text>
-                            <Form.Control
-                                value={sensorSetting && sensorSetting.hmdtMax}
-                                onChange={(e) => handleSensorSettingChange("hmdtMax", e.target.value)}
-                                onBlur={handleSensorSettingInsert}
-                                type="number"
-                                placeholder="최대 습도"
-                            />
-                        </InputGroup>
-                    </Col>
-                </Row>
-                <h5>이산화탄소(ppm)</h5>
-                <Row className="mb-2">
-                    <Col>
-                        <InputGroup>
-                            <Form.Control
-                                value={sensorSetting && sensorSetting.co2Min}
-                                onChange={(e) => handleSensorSettingChange("co2Min", e.target.value)}
-                                onBlur={handleSensorSettingInsert}
-                                type="number"
-                                placeholder="최소 CO₂"
-                            />
-                            <InputGroup.Text>~</InputGroup.Text>
-                            <Form.Control
-                                value={sensorSetting && sensorSetting.co2Max}
-                                onChange={(e) => handleSensorSettingChange("co2Max", e.target.value)}
-                                onBlur={handleSensorSettingInsert}
-                                type="number"
-                                placeholder="최대 CO₂"
-                            />
-                        </InputGroup>
-                    </Col>
-                </Row>
+            <Card className="mb-3 p-3" style={greenCard}>
+                <div className="d-flex align-items-center justify-content-center mb-2">
+                    <span style={labelStyle}>온도(℃)</span>
+                    <InputGroup style={{ maxWidth: "260px" }}>
+                        <Form.Control style={compactInput} value={sensorSetting && sensorSetting.tprtMin}
+                            onChange={(e) => handleSensorSettingChange("tprtMin", e.target.value)}
+                            onBlur={handleSensorSettingInsert} type="number" placeholder="최소"/>
+                        <InputGroup.Text>~</InputGroup.Text>
+                        <Form.Control style={compactInput} value={sensorSetting && sensorSetting.tprtMax}
+                            onChange={(e) => handleSensorSettingChange("tprtMax", e.target.value)}
+                            onBlur={handleSensorSettingInsert} type="number" placeholder="최대"/>
+                    </InputGroup>
+                </div>
+                <div className="d-flex align-items-center justify-content-center mb-2">
+                    <span style={labelStyle}>수온(℃)</span>
+                    <InputGroup style={{ maxWidth: "260px" }}>
+                        <Form.Control style={compactInput} value={sensorSetting && sensorSetting.watrTprtMin}
+                            onChange={(e) => handleSensorSettingChange("watrTprtMin", e.target.value)}
+                            onBlur={handleSensorSettingInsert} type="number" placeholder="최소"/>
+                        <InputGroup.Text>~</InputGroup.Text>
+                        <Form.Control style={compactInput} value={sensorSetting && sensorSetting.watrTprtMax}
+                            onChange={(e) => handleSensorSettingChange("watrTprtMax", e.target.value)}
+                            onBlur={handleSensorSettingInsert} type="number" placeholder="최대"/>
+                    </InputGroup>
+                </div>
+                <div className="d-flex align-items-center justify-content-center mb-2">
+                    <span style={labelStyle}>습도(%)</span>
+                    <InputGroup style={{ maxWidth: "260px" }}>
+                        <Form.Control style={compactInput} value={sensorSetting && sensorSetting.hmdtMin}
+                            onChange={(e) => handleSensorSettingChange("hmdtMin", e.target.value)}
+                            onBlur={handleSensorSettingInsert} type="number" placeholder="최소"/>
+                        <InputGroup.Text>~</InputGroup.Text>
+                        <Form.Control style={compactInput} value={sensorSetting && sensorSetting.hmdtMax}
+                            onChange={(e) => handleSensorSettingChange("hmdtMax", e.target.value)}
+                            onBlur={handleSensorSettingInsert} type="number" placeholder="최대"/>
+                    </InputGroup>
+                </div>
+                <div className="d-flex align-items-center justify-content-center mb-2">
+                    <span style={labelStyle}>CO₂(ppm)</span>
+                    <InputGroup style={{ maxWidth: "260px" }}>
+                        <Form.Control style={compactInput} value={sensorSetting && sensorSetting.co2Min}
+                            onChange={(e) => handleSensorSettingChange("co2Min", e.target.value)}
+                            onBlur={handleSensorSettingInsert} type="number" placeholder="최소"/>
+                        <InputGroup.Text>~</InputGroup.Text>
+                        <Form.Control style={compactInput} value={sensorSetting && sensorSetting.co2Max}
+                            onChange={(e) => handleSensorSettingChange("co2Max", e.target.value)}
+                            onBlur={handleSensorSettingInsert} type="number" placeholder="최대"/>
+                    </InputGroup>
+                </div>
             </Card>
 
-            <Card className="mb-3 p-3">
-                <h5>조명 시간 설정</h5>
-                {lightSchedules.map((schedule, idx) => (
-                    <Row key={idx} className="align-items-center mb-2">
-                        <Col>
-                            <InputGroup>
-                                <Form.Control type="time" value={schedule.strtTime}
-                                              onChange={(e) => handleScheduleChange(idx, "LIGHT", "strtTime", e.target.value)}/>
-                                <InputGroup.Text>~</InputGroup.Text>
-                                <Form.Control type="time" value={schedule.fnshTime}
-                                              onChange={(e) => handleScheduleChange(idx, "LIGHT", "fnshTime", e.target.value)}/>
-                                <InputGroup.Text>
-                                    <Form.Check
-                                        type="switch"
-                                        checked={!schedule.dlteYn}
-                                        onClick={() => handleScheduleChange(idx, 'LIGHT', 'dlteYn', !schedule.dlteYn)}
-                                        disabled={!(schedule.strtTime && schedule.fnshTime)}
-                                    />
-                                </InputGroup.Text>
-                                <Button
-                                    style={{
-                                        maxWidth: "20px",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        padding: "0"
-                                    }}
-                                    variant="danger"
-                                    onClick={() => {
-                                        setShow(true);
-                                        setDeleteTarget({id: idx, type: 'LIGHT'});
-                                    }}
-                                >
-                                    <Dash/>
-                                </Button>
-                            </InputGroup>
-                        </Col>
-                    </Row>
-                ))}
-                <Button variant="success" size="sm" onClick={() => addSchedule("LIGHT")}>+ 시간 추가</Button>
-            </Card>
-
-            <Card className="p-3">
-                <h5>관수 시간 설정</h5>
-                {waterSchedules.map((schedule, idx) => (
-                    <Row key={idx} className="align-items-center mb-2">
-                        <Col>
-                            <InputGroup>
-                                <Form.Control type="time" value={schedule.strtTime}
-                                              onChange={(e) => handleScheduleChange(idx, "WATER", "strtTime", e.target.value)}/>
-                                <InputGroup.Text>~</InputGroup.Text>
-                                <Form.Control type="time" value={schedule.fnshTime}
-                                              onChange={(e) => handleScheduleChange(idx, "WATER", "fnshTime", e.target.value)}/>
-                                <InputGroup.Text>
-                                    <Form.Check
-                                        type="switch"
-                                        checked={!schedule.dlteYn}
-                                        onClick={() => handleScheduleChange(idx, 'WATER', 'dlteYn', !schedule.dlteYn)}
-                                        disabled={!(schedule.strtTime && schedule.fnshTime)}
-                                    />
-                                </InputGroup.Text>
-                                <Button
-                                    style={{
-                                        maxWidth: "20px",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        padding: "0"
-                                    }}
-                                    variant="danger"
-                                    onClick={() => {
-                                        setShow(true);
-                                        setDeleteTarget({id: idx, type: 'WATER'});
-                                    }}
-                                >
-                                    <Dash/>
-                                </Button>
-                            </InputGroup>
-                        </Col>
-                    </Row>
-                ))}
-                <Button variant="success" size="sm" onClick={() => addSchedule("WATER")}>+ 시간 추가</Button>
-            </Card>
+            <Row>
+                <Col md={6} className="mb-3">
+                    <Card className="p-3 h-100" style={greenCard}>
+                        <h5 className="text-center">조명 시간 설정</h5>
+                        {lightSchedules.map((schedule, idx) => (
+                            <div key={idx} className="d-flex align-items-center justify-content-center mb-2">
+                                <InputGroup style={{ maxWidth: "360px" }}>
+                                    <Form.Control type="time" value={schedule.strtTime}
+                                                  onChange={(e) => handleScheduleChange(idx, "LIGHT", "strtTime", e.target.value)}/>
+                                    <InputGroup.Text>~</InputGroup.Text>
+                                    <Form.Control type="time" value={schedule.fnshTime}
+                                                  onChange={(e) => handleScheduleChange(idx, "LIGHT", "fnshTime", e.target.value)}/>
+                                    <InputGroup.Text>
+                                        <Form.Check
+                                            type="switch"
+                                            checked={!schedule.dlteYn}
+                                            onClick={() => handleScheduleChange(idx, 'LIGHT', 'dlteYn', !schedule.dlteYn)}
+                                            disabled={!(schedule.strtTime && schedule.fnshTime)}
+                                        />
+                                    </InputGroup.Text>
+                                    <Button
+                                        style={{ maxWidth: "20px", display: "flex", alignItems: "center", justifyContent: "center", padding: "0" }}
+                                        variant="danger"
+                                        onClick={() => { setShow(true); setDeleteTarget({id: idx, type: 'LIGHT'}); }}
+                                    >
+                                        <Dash/>
+                                    </Button>
+                                </InputGroup>
+                            </div>
+                        ))}
+                        <div className="text-center">
+                            <Button variant="success" size="sm" onClick={() => addSchedule("LIGHT")}>+ 시간 추가</Button>
+                        </div>
+                    </Card>
+                </Col>
+                <Col md={6} className="mb-3">
+                    <Card className="p-3 h-100" style={greenCard}>
+                        <h5 className="text-center">관수 시간 설정</h5>
+                        {waterSchedules.map((schedule, idx) => (
+                            <div key={idx} className="d-flex align-items-center justify-content-center mb-2">
+                                <InputGroup style={{ maxWidth: "360px" }}>
+                                    <Form.Control type="time" value={schedule.strtTime}
+                                                  onChange={(e) => handleScheduleChange(idx, "WATER", "strtTime", e.target.value)}/>
+                                    <InputGroup.Text>~</InputGroup.Text>
+                                    <Form.Control type="time" value={schedule.fnshTime}
+                                                  onChange={(e) => handleScheduleChange(idx, "WATER", "fnshTime", e.target.value)}/>
+                                    <InputGroup.Text>
+                                        <Form.Check
+                                            type="switch"
+                                            checked={!schedule.dlteYn}
+                                            onClick={() => handleScheduleChange(idx, 'WATER', 'dlteYn', !schedule.dlteYn)}
+                                            disabled={!(schedule.strtTime && schedule.fnshTime)}
+                                        />
+                                    </InputGroup.Text>
+                                    <Button
+                                        style={{ maxWidth: "20px", display: "flex", alignItems: "center", justifyContent: "center", padding: "0" }}
+                                        variant="danger"
+                                        onClick={() => { setShow(true); setDeleteTarget({id: idx, type: 'WATER'}); }}
+                                    >
+                                        <Dash/>
+                                    </Button>
+                                </InputGroup>
+                            </div>
+                        ))}
+                        <div className="text-center">
+                            <Button variant="success" size="sm" onClick={() => addSchedule("WATER")}>+ 시간 추가</Button>
+                        </div>
+                    </Card>
+                </Col>
+            </Row>
             <AlertModal
                 show={show}
                 hideModalFunc={() => setShow(false)}

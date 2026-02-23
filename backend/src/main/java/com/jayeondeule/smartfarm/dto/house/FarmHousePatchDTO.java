@@ -16,4 +16,5 @@ public class FarmHousePatchDTO {
     private boolean rfrsFlag; // 수동 센서 측정
     private String cropKind; // 작물 종류
     private boolean mnulCtrlFlag; // 릴레이 수동 조작 여부
+    private String ctrlType; // 제어 유형 (algorithm, ai)
 }

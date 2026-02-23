@@ -1,7 +1,7 @@
 import React from "react";
 import {Form, Col, Row} from "react-bootstrap";
 
-export default function LabeledPhoneInput({label, name, smLabel = 2, value, placeholder="010-1234-5678", required = false, onChange}) {
+export default function LabeledPhoneInput({label, name, smLabel = 2, smInput, value, placeholder="010-1234-5678", required = false, onChange}) {
     const handleChange = (e) => {
         let val = e.target.value.replace(/\D/g, ""); // 숫자만
         if (val.length > 3 && val.length <= 7) {
@@ -17,7 +17,7 @@ export default function LabeledPhoneInput({label, name, smLabel = 2, value, plac
             <Form.Label column sm={smLabel}>
                 {label} {required && <span style={{color: "red"}}>*</span>}
             </Form.Label>
-            <Col sm={12 - smLabel}>
+            <Col sm={smInput || (12 - smLabel)}>
                 <Form.Control
                     name={name}
                     value={value}

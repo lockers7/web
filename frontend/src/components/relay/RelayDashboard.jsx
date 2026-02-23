@@ -1,6 +1,6 @@
 import {useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
 import {useEffect, useState} from "react";
-import {Row, Col, Card, Button, OverlayTrigger, Tooltip} from "react-bootstrap";
+import {Row, Col, Card, Form, OverlayTrigger, Tooltip} from "react-bootstrap";
 import {InfoCircle} from "react-bootstrap-icons";
 
 import {getRelayStatus, patchRelayStatus} from "../../utils/relayUtil.js";
@@ -84,9 +84,26 @@ export default function RelayDashboard({farmId, house, setSelectedHouse}) {
         },
     });
 
-    const handleToggleMode = () => {
-        const updatedHouse = {...house, mnulCtrlFlag: !house.mnulCtrlFlag};
-        toggleModeMutation.mutate(updatedHouse);
+    const getOperationMode = () => {
+        if (!house.mnulCtrlFlag) return "manual";
+        if (house.ctrlType === "ai") return "ai";
+        return "algorithm";
+    };
+
+    const handleModeChange = (e) => {
+        const mode = e.target.value;
+        let mnulCtrlFlag, ctrlType;
+        if (mode === "manual") { mnulCtrlFlag = false; ctrlType = "algorithm"; }
+        else if (mode === "ai") { mnulCtrlFlag = true; ctrlType = "ai"; }
+        else { mnulCtrlFlag = true; ctrlType = "algorithm"; }
+        toggleModeMutation.mutate({...house, mnulCtrlFlag, ctrlType});
+    };
+
+    const modeCardBorder = () => {
+        const mode = getOperationMode();
+        if (mode === "manual") return "border-warning";
+        if (mode === "ai") return "border-primary";
+        return "border-success";
     };
 
     if (isRelayLoading) return <LoadingPage/>;
@@ -95,32 +112,34 @@ export default function RelayDashboard({farmId, house, setSelectedHouse}) {
     return (
         <div>
             <Row className="mt-4 d-flex justify-content-center">
-                <Col xs={6} md={4} lg={3} key={house.housId} className="mb-3">
-                    <Card
-                        className={`text-center shadow-sm ${house.mnulCtrlFlag ? "border-warning" : "border-success"}`}>
+                <Col xs="auto" key={house.housId} className="mb-3">
+                    <Card className={`text-center shadow-sm ${modeCardBorder()}`}>
                         <Card.Body className="position-relative">
                             <div style={{position: "absolute", top: "0.2rem", right: "0.35rem", zIndex: 10}}>
                                 <OverlayTrigger
                                     placement="top"
                                     overlay={
                                         <Tooltip id={`tooltip-info`}>
-                                            수동: 개별 릴레이를 제어할 수 있습니다.<br/>
-                                            자동: 사전 설정된 값에 따라 릴레이를 제어합니다.
+                                            인공지능: AI가 릴레이를 자동 제어합니다.<br/>
+                                            알고리즘: 센서 기반 알고리즘이 자동 제어합니다.<br/>
+                                            수동제어: 개별 릴레이를 직접 제어할 수 있습니다.
                                         </Tooltip>
                                     }
                                 >
                                     <InfoCircle size={16}/>
                                 </OverlayTrigger>
                             </div>
-                            <Card.Title className="mb-2">작동방식</Card.Title>
-                            <Button
-                                variant={house.mnulCtrlFlag ? "warning" : "success"}
-                                className="w-100"
-                                onClick={handleToggleMode}
-                                disabled={toggleModeMutation.isLoading}
+                            <Card.Title className="mb-2">운용방식</Card.Title>
+                            <Form.Select
+                                value={getOperationMode()}
+                                onChange={handleModeChange}
+                                disabled={toggleModeMutation.isPending}
+                                style={{padding: "4px 2.75rem 4px 8px", width: "fit-content", margin: "0 auto"}}
                             >
-                                {house.mnulCtrlFlag ? "수동" : "자동"}
-                            </Button>
+                                <option value="ai">인공지능</option>
+                                <option value="algorithm">알고리즘</option>
+                                <option value="manual">수동제어</option>
+                            </Form.Select>
                         </Card.Body>
                     </Card>
                 </Col>
@@ -133,7 +152,7 @@ export default function RelayDashboard({farmId, house, setSelectedHouse}) {
                         label={item.label}
                         relayNum={item.num}
                         relayStatus={relayStatus}
-                        manualMode={house.mnulCtrlFlag}
+                        manualMode={!house.mnulCtrlFlag}
                         handleToggle={handleToggleRelay}
                         toggleRelayMutation={toggleRelayMutation}
                     />

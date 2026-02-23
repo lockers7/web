@@ -4,6 +4,7 @@ export default function LabeledSelect({
                                           label,
                                           name,
                                           smLabel = 2,
+                                          smInput,
                                           option = [],
                                           placeholder = "",
                                           required = false,
@@ -14,7 +15,7 @@ export default function LabeledSelect({
             <Form.Label column sm={smLabel}>
                 {label} {required && <span style={{color: "red"}}>*</span>}
             </Form.Label>
-            <Col sm={12 - smLabel}>
+            <Col sm={smInput || (12 - smLabel)}>
                 <Form.Select name={name} required={required} {...props}>
                     <option value="" disabled selected>{placeholder}</option>
                     {option.map((opt, idx) => (

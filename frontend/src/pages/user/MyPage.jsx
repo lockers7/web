@@ -54,11 +54,12 @@ export default function MyPage() {
 
     return (
         <Container className="d-flex justify-content-center align-items-center flex-grow-1">
-            <Card className="p-4 m-5" style={{width: "600px"}}>
+            <Card className="p-4 m-5" style={{width: "420px", borderWidth: "2px"}}>
                 <Form className="p-4" onSubmit={handleSubmit}>
-                    <h2 className="mb-4">마이페이지</h2>
+                    <h2 className="mb-4 text-center">마이페이지</h2>
 
                     <LabeledInput
+                        smLabel={4}
                         label="이름"
                         type="text"
                         name="userName"
@@ -71,6 +72,7 @@ export default function MyPage() {
                     />
 
                     <LabeledInput
+                        smLabel={4}
                         label="직위"
                         name="pstn"
                         value={form.pstn}
@@ -82,6 +84,7 @@ export default function MyPage() {
                     />
 
                     <LabeledPhoneInput
+                        smLabel={4}
                         label="휴대폰번호"
                         name="hpNo"
                         value={form.hpNo}
@@ -104,7 +107,7 @@ export default function MyPage() {
                                         수정하기
                                     </Button>
                                     <Button variant="outline-danger" onClick={() => setShowWithdrawModal(true)}>
-                                        회원탈퇴
+                                        관리자삭제
                                     </Button>
                                 </InputGroup>
                             </div>
@@ -130,8 +133,8 @@ export default function MyPage() {
                     dispatch(logout()); // Redux 상태 초기화
                     navigate("/login"); // 로그인 페이지로 이동
                 }}
-                title="정말로 회원탈퇴 하시겠습니다?"
-                body="회원탈퇴 후에는 복구가 불가능합니다."
+                title="정말로 관리자삭제 하시겠습니다?"
+                body="관리자삭제 후에는 복구가 불가능합니다."
                 variant="danger"
             />
         </Container>

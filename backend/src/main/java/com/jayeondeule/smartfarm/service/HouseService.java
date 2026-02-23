@@ -67,6 +67,7 @@ public class HouseService {
             target.setRfrsFlag(modifiedInfo.isRfrsFlag());
             target.setSnsrRfrsItvl(modifiedInfo.getSnsrRfrsItvl());
             target.setMnulCtrlFlag(modifiedInfo.isMnulCtrlFlag());
+            target.setCtrlType(modifiedInfo.getCtrlType());
 
             farmHouseRepository.save(target);
         }

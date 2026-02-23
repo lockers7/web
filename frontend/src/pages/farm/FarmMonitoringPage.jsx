@@ -1,12 +1,12 @@
-import React, {useState, useEffect} from "react";
-import {useNavigate, useParams} from "react-router-dom";
-import {Container, Tabs, Tab, Accordion} from "react-bootstrap";
-import {useSelector} from "react-redux";
-import {useQuery} from "@tanstack/react-query";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Container, Tabs, Tab, Accordion } from "react-bootstrap";
+import { useSelector } from "react-redux";
+import { useQuery } from "@tanstack/react-query";
 
-import {getHouseList} from "../../utils/houseUtil.js";
-import {getLatestSensorData, getSensorData} from "../../utils/sensorUtil.js";
-import {getFarm} from "../../utils/farmUtil.js";
+import { getHouseList } from "../../utils/houseUtil.js";
+import { getLatestSensorData, getSensorData } from "../../utils/sensorUtil.js";
+import { getFarm } from "../../utils/farmUtil.js";
 
 import FarmKebabMenu from "../../components/farm/FarmKebabMenu.jsx";
 import HouseList from "../../components/house/HouseList.jsx";
@@ -18,33 +18,38 @@ import ErrorPage from "../../pages/common/ErrorPage.jsx";
 
 import "./FarmMonitoringPage.css";
 import MemoDashboard from "../../components/memo/MemoDashboard.jsx";
-import {getUser} from "../../utils/userUtil.js";
+import { getUser } from "../../utils/userUtil.js";
 import SensorSettingDashboard from "../../components/sensor/SensorSettingDashboard.jsx";
 import LatestSensorItem from "../../components/sensor/LatestSensorItem.jsx";
 import LatestSensorSelected from "../../components/sensor/LatestSensorSelected.jsx";
 
 export default function FarmMonitoringPage() {
-    const {farmId} = useParams();
+    const { farmId } = useParams();
     const auth = useSelector(state => state.auth);
     const navigate = useNavigate();
 
     const [isAccordionOpened, setIsAccordionOpened] = useState(true);
 
     const [selectedHouse, setSelectedHouse] = useState(null);
-    const [startDate, setStartDate] = useState(new Date().toISOString().split("T")[0]);
+    const [startDate, setStartDate] = useState(() => {
+        const d = new Date();
+        d.setMonth(d.getMonth() - 1);
+        d.setDate(d.getDate() + 1);
+        return d.toISOString().split("T")[0];
+    });
     const [endDate, setEndDate] = useState(new Date().toISOString().split("T")[0]);
 
     // 농장 정보
-    const {data: farm, isLoading: farmLoading, error: farmError} = useQuery({
+    const { data: farm, isLoading: farmLoading, error: farmError } = useQuery({
         queryKey: ["farm", farmId],
-        queryFn: () => getFarm({farmId}).then(res => res.data),
+        queryFn: () => getFarm({ farmId }).then(res => res.data),
         enabled: !!farmId,
     });
 
     // 재배사 리스트
-    const {data: houses = [], isLoading: housesLoading, error: housesError} = useQuery({
+    const { data: houses = [], isLoading: housesLoading, error: housesError } = useQuery({
         queryKey: ["houses", farmId],
-        queryFn: () => getHouseList({farmId}).then(res => res.data),
+        queryFn: () => getHouseList({ farmId }).then(res => res.data),
         enabled: !!farmId,
     });
 
@@ -99,8 +104,8 @@ export default function FarmMonitoringPage() {
         navigate(`/farm/${farmId}/house/${selectedHouse.housId}/sensor/setting`);
     }
 
-    if (farmLoading) return <LoadingPage/>;
-    if (farmError || housesError || sensorError) return <ErrorPage/>;
+    if (farmLoading) return <LoadingPage />;
+    if (farmError || housesError || sensorError) return <ErrorPage />;
 
     return (
         <Container className="mt-4">
@@ -109,7 +114,7 @@ export default function FarmMonitoringPage() {
                     auth.userInfo.authLvel === "ADMIN" ? (
                         <>
                             <h3 className="mb-0">{farm.farmName} 현황</h3>
-                            <FarmKebabMenu farmId={farmId}/>
+                            <FarmKebabMenu farmId={farmId} />
                         </>
                     ) : (
                         <h3 className="mb-0">{farm.farmName} 현황</h3>
@@ -121,7 +126,7 @@ export default function FarmMonitoringPage() {
             <Accordion onSelect={(key) => setIsAccordionOpened(key)} defaultActiveKey="0" className="mb-3">
                 <Accordion.Item eventKey="0">
                     <Accordion.Header>
-                        <span style={{fontWeight: "bold"}}>실시간 재배사 현황</span>
+                        <span style={{ fontWeight: "bold", fontSize: "150%", textAlign: "center" }}>실 시 간    재 배 사   현 황</span>
                     </Accordion.Header>
                     <Accordion.Body className="p-0">
                         {!latestSensorLoading &&
@@ -130,6 +135,7 @@ export default function FarmMonitoringPage() {
                                 houses={houses}
                                 setSelectedHouse={setSelectedHouse}
                                 selectedHouse={selectedHouse}
+                                farmId={farmId}
                             />
                         }
                     </Accordion.Body>
@@ -142,7 +148,7 @@ export default function FarmMonitoringPage() {
                 if (!data) return null;
                 return (
                     <LatestSensorSelected latestSensorData={data}
-                                      house={selectedHouse}/>
+                        house={selectedHouse} />
                 )
             })()}
 
@@ -187,7 +193,7 @@ export default function FarmMonitoringPage() {
                     }
                 >
                     {selectedHouse &&
-                        <RelayDashboard farmId={farmId} house={selectedHouse} setSelectedHouse={setSelectedHouse}/>
+                        <RelayDashboard farmId={farmId} house={selectedHouse} setSelectedHouse={setSelectedHouse} />
                     }
                 </Tab>
 
@@ -202,7 +208,7 @@ export default function FarmMonitoringPage() {
                 >
                     {/* 메모 컴포넌트 */}
                     {selectedHouse &&
-                        <MemoDashboard farmId={farmId} houseId={selectedHouse.housId}/>
+                        <MemoDashboard farmId={farmId} houseId={selectedHouse.housId} />
                     }
                 </Tab>
 
@@ -216,7 +222,7 @@ export default function FarmMonitoringPage() {
                     }
                 >
                     {selectedHouse &&
-                        <SensorSettingDashboard farmId={farmId} selectedHouse={selectedHouse.housId}/>
+                        <SensorSettingDashboard farmId={farmId} selectedHouse={selectedHouse.housId} />
                     }
                 </Tab>
             </Tabs>

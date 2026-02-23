@@ -6,6 +6,7 @@ import MyPage from "../pages/user/MyPage.jsx";
 import PasswordChangePage from "../pages/user/PasswordChangePage.jsx";
 import FarmMonitoringPage from "../pages/farm/FarmMonitoringPage.jsx";
 import SensorSettingDashboard from "../components/sensor/SensorSettingDashboard.jsx";
+import AiChatPage from "../pages/ai/AiChatPage.jsx";
 
 export default function CommonRoutes() {
     return (
@@ -15,6 +16,14 @@ export default function CommonRoutes() {
                 element={
                     <PrivateRoute>
                         <FarmMonitoringPage/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/ai-chat"
+                element={
+                    <PrivateRoute>
+                        <AiChatPage/>
                     </PrivateRoute>
                 }
             />

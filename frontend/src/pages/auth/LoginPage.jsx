@@ -36,7 +36,7 @@ export default function LoginPage() {
     return (
         <div className="mt-5">
             <Container className="d-flex justify-content-center align-items-center flex-grow-1">
-                <Card className="p-4" style={{width: "400px"}}>
+                <Card className="p-4" style={{width: "340px", borderWidth: "2px"}}>
                     <Card.Body>
                         <Card.Title className="mb-4 text-center cardTitle">로그인</Card.Title>
                         {errorMessage && (
@@ -46,7 +46,7 @@ export default function LoginPage() {
                         )}
                         <Form onSubmit={handleSubmit}>
                             <LabeledInput
-                                smLabel={12}
+                                smLabel={4}
                                 label="아이디"
                                 name="userId"
                                 placeholder="아이디 입력"
@@ -56,7 +56,7 @@ export default function LoginPage() {
                             />
 
                             <LabeledInput
-                                smLabel={12}
+                                smLabel={4}
                                 label="비밀번호"
                                 type="password"
                                 name="passwd"
