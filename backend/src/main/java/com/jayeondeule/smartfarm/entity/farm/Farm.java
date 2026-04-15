@@ -3,7 +3,6 @@ package com.jayeondeule.smartfarm.entity.farm;
 import com.jayeondeule.smartfarm.converter.ProductConverter;
 import com.jayeondeule.smartfarm.enums.farm.Product;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -86,4 +85,8 @@ public class Farm {
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP(6) WITHOUT TIME ZONE")
     private LocalDateTime rgstDttm = LocalDateTime.now(); // 등록일자
+
+    @Setter
+    @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
+    private String dlteYn = "N"; // 삭제여부 (Y/N)
 }

@@ -2,11 +2,9 @@ package com.jayeondeule.smartfarm.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.jayeondeule.smartfarm.dto.farm.FarmDTO;
 import com.jayeondeule.smartfarm.dto.memo.FarmHouseCropsDTO;
 import com.jayeondeule.smartfarm.dto.memo.FarmHouseCropsInsertDTO;
 import com.jayeondeule.smartfarm.dto.user.UserClaimDTO;
-import com.jayeondeule.smartfarm.entity.farm.Farm;
 import com.jayeondeule.smartfarm.entity.memo.FarmHouseCrops;
 import com.jayeondeule.smartfarm.entity.memo.FarmHouseCropsId;
 import com.jayeondeule.smartfarm.repository.FarmHouseCropsRepository;
@@ -20,7 +18,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,6 +43,7 @@ public class MemoService {
         data.setHousId(houseId);
         data.setAthr(author.getUserId());
         data.setRmks(insertInfo.getMemo());
+        data.setCropStat(insertInfo.getCropStat());
 
         farmHouseCropsRepository.save(data);
     }
@@ -52,7 +54,15 @@ public class MemoService {
         Page<FarmHouseCrops> memoList = farmHouseCropsRepository.findAllByFarmIdAndHousId(farmId, houseId, pageable);
 
         Page<FarmHouseCropsDTO> result = memoList.map(memo -> mapper.convertValue(memo, FarmHouseCropsDTO.class));
-        result.forEach(item -> item.setAthrName(userRepository.findByUserId(item.getAthr()).getUserName()));
+
+        // N+1 방지: 작성자 ID를 배치 조회
+        Set<String> authorIds = result.getContent().stream()
+                .map(FarmHouseCropsDTO::getAthr)
+                .collect(Collectors.toSet());
+        Map<String, String> nameMap = userRepository.findByUserIdIn(authorIds).stream()
+                .collect(Collectors.toMap(user -> user.getUserId(), user -> user.getUserName()));
+        result.forEach(item -> item.setAthrName(nameMap.getOrDefault(item.getAthr(), item.getAthr())));
+
         return result;
     }
 
@@ -63,12 +73,12 @@ public class MemoService {
                 .recdDttm(recdDttm)
                 .build();
 
-        Optional<FarmHouseCrops> opt = farmHouseCropsRepository.findById(id);
+        Optional<FarmHouseCrops> opt = farmHouseCropsRepository.findById(Objects.requireNonNull(id));
 
         if(opt.isPresent()) {
             FarmHouseCrops target = opt.get();
             target.setRmks(memo);
-            farmHouseCropsRepository.save(target);
+            farmHouseCropsRepository.save(Objects.requireNonNull(target));
         }
     }
 
@@ -79,10 +89,10 @@ public class MemoService {
                 .recdDttm(recdDttm)
                 .build();
 
-        Optional<FarmHouseCrops> opt = farmHouseCropsRepository.findById(id);
+        Optional<FarmHouseCrops> opt = farmHouseCropsRepository.findById(Objects.requireNonNull(id));
 
         if(opt.isPresent()) {
-            farmHouseCropsRepository.delete(opt.get());
+            farmHouseCropsRepository.delete(Objects.requireNonNull(opt.get()));
         }
     }
 }

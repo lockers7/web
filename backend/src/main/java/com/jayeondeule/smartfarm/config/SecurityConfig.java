@@ -4,7 +4,6 @@ import com.jayeondeule.smartfarm.enums.security.WhiteList;
 import com.jayeondeule.smartfarm.filter.JwtAuthFilter;
 import com.jayeondeule.smartfarm.util.JwtUtil;
 import com.jayeondeule.smartfarm.util.SwaggerBeanUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,7 +24,6 @@ import java.util.List;
 
 @Configuration
 public class SecurityConfig {
-    @Autowired
     private final SwaggerBeanUtil swaggerBeanUtility;
     private final JwtUtil jwtUtil;
 
@@ -47,6 +45,8 @@ public class SecurityConfig {
                                         .map(WhiteList::getPath)
                                         .toArray(String[]::new)
                                 ).permitAll()
+                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/api/setting/**").hasAnyRole("ADMIN", "FARM_ADMIN")
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->
@@ -59,7 +59,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Vite dev 서버
+        configuration.setAllowedOrigins(List.of("http://localhost:5173", "https://lockers7.iptime.org", "http://lockers7.iptime.org")); // Vite dev + 운영
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

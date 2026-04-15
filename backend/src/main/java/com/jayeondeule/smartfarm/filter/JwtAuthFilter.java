@@ -10,9 +10,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.List;
 
@@ -23,9 +26,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain)
             throws ServletException, IOException, java.io.IOException {
 
         String path = request.getRequestURI();
@@ -44,17 +47,22 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 UserClaimDTO userInfo = jwtUtil.getUserInfo(token);
 
                 // Authentication 객체 생성
+                // 사용자 권한을 GrantedAuthority로 매핑
+                List<SimpleGrantedAuthority> authorities = List.of(
+                        new SimpleGrantedAuthority("ROLE_" + userInfo.getAuthLvel().getName())
+                );
+
                 UsernamePasswordAuthenticationToken auth =
                         new UsernamePasswordAuthenticationToken(
-                                userInfo, // principal: 사용자 정보(Map)
-                                null,     // credentials
-                                List.of() // authorities: 나중에 Role 기반 권한 처리 가능
+                                userInfo,    // principal: 사용자 정보
+                                null,        // credentials
+                                authorities  // authorities: Role 기반 권한
                         );
 
                 SecurityContextHolder.getContext().setAuthentication(auth);
 
             } catch (Exception e) {
-                // 토큰 유효하지 않으면 401
+                log.warn("JWT 인증 실패: {}", e.getMessage());
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }

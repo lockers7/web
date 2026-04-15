@@ -12,6 +12,7 @@ export default function ChatMessageList({messages}) {
         <div
             style={{
                 flex: 1,
+                minWidth: 0,
                 overflowY: "auto",
                 padding: "16px",
                 backgroundColor: "#F5F5F5",
@@ -28,7 +29,16 @@ export default function ChatMessageList({messages}) {
                 </div>
             ) : (
                 messages.map((msg, index) => (
-                    <ChatBubble key={index} role={msg.role} content={msg.content}/>
+                    <ChatBubble
+                        key={msg.timestamp || `msg-${index}`}
+                        role={msg.role}
+                        content={msg.content}
+                        sources={msg.sources}
+                        toolsUsed={msg.toolsUsed}
+                        responseType={msg.responseType}
+                        elapsedSec={msg.elapsedSec}
+                        timestamp={msg.timestamp}
+                    />
                 ))
             )}
             <div ref={bottomRef}/>

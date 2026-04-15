@@ -6,6 +6,11 @@ export async function getHouseList({farmId}) {
     return api({url, method});
 }
 
+export async function getNextHousId(farmId) {
+    const { url, method } = apiRoutes.houses.nextId(farmId);
+    return api({url, method});
+}
+
 export async function registerHouse(form) {
     const { url, method } = apiRoutes.houses.register(form.farmId);
     return api({url, method, data: form});
@@ -23,5 +28,15 @@ export async function patchHouse(form) {
 
 export async function deleteHouse(farmId, houseId){
     const { url, method } = apiRoutes.houses.delete(farmId, houseId);
+    return api({url, method});
+}
+
+export async function restoreHouse(farmId, houseId) {
+    const { url, method } = apiRoutes.houses.restore(farmId, houseId);
+    return api({url, method});
+}
+
+export async function hardDeleteHouse(farmId, houseId) {
+    const { url, method } = apiRoutes.houses.hardDelete(farmId, houseId);
     return api({url, method});
 }

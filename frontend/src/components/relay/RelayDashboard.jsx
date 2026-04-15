@@ -1,23 +1,41 @@
 import {useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
-import {useEffect, useState} from "react";
+import {useMemo, useState} from "react";
 import {Row, Col, Card, Form, OverlayTrigger, Tooltip} from "react-bootstrap";
 import {InfoCircle} from "react-bootstrap-icons";
+import axios from "axios";
 
 import {getRelayStatus, patchRelayStatus} from "../../utils/relayUtil.js";
 import {patchHouse} from "../../utils/houseUtil.js";
 import RelayCard from "./RelayCard.jsx";
+import AiJudgmentModal from "./AiJudgmentModal.jsx";
 import LoadingPage from "../../pages/common/LoadingPage.jsx";
 import ErrorPage from "../../pages/common/ErrorPage.jsx";
+
+const AI_API_BASE = "/ai-api";
+
+async function fetchAiJudgment(farmId, houseId) {
+    try {
+        const res = await axios.get(`${AI_API_BASE}/api/v1/ai-judgment/${farmId}/${houseId}`, {timeout: 5000});
+        if (res.data && res.data.success) {
+            return res.data;
+        }
+    } catch (e) {
+        console.warn("AI 판단 조회 실패:", e.message);
+    }
+    return null;
+}
 
 export default function RelayDashboard({farmId, house, setSelectedHouse}) {
     const queryClient = useQueryClient();
 
-    const [relayLabels, setRelayLabels] = useState([]);
+    const [showAiModal, setShowAiModal] = useState(false);
+    const [aiJudgment, setAiJudgment] = useState(null);
+    const [toggledDeviceLabel, setToggledDeviceLabel] = useState("");
 
-    useEffect(() => {
+    const relayLabels = useMemo(() => {
         if (farmId == 1 && house.housId == 2) {
             // 릴레이 라벨(2동 임시)
-            setRelayLabels([
+            return [
                 {label: "흡입팬(7)", num: 7},
                 {label: "배출팬(8)", num: 8},
                 {label: "순환밸브(9)", num: 9},
@@ -30,32 +48,33 @@ export default function RelayDashboard({farmId, house, setSelectedHouse}) {
                 {label: "칠러Ⅰ(1)", num: 1},
                 {label: "칠러Ⅱ(4)", num: 4},
                 {label: "라디에이터(3)", num: 3},
-            ]);
-        } else {
-            // 릴레이 라벨(1, 3동)
-            setRelayLabels([
-                {label: "흡입팬(5)", num: 5},
-                {label: "배출팬(6)", num: 6},
-                {label: "순환밸브(10)", num: 10},
-                {label: "흡입밸브(11)", num: 11},
-                {label: "배출밸브(14)", num: 14},
-                {label: "배수밸브(3)", num: 3},
-                {label: "포그생성(순환모터)(2)", num: 2},
-                {label: "조명(7)", num: 7},
-                {label: "관수(8)", num: 8},
-                {label: "수온히터(1)", num: 1},
-                {label: "실내히터(9)", num: 9},
-                {label: "히터밸브(15)", num: 15},
-            ]);
+            ];
         }
-    }, [house])
+        // 릴레이 라벨(1, 3동)
+        return [
+            {label: "흡입팬(5)", num: 5},
+            {label: "배출팬(6)", num: 6},
+            {label: "순환밸브(10)", num: 10},
+            {label: "흡입밸브(14)", num: 14},
+            {label: "배출밸브(11)", num: 11},
+            {label: "배수밸브(3)", num: 3},
+            {label: "포그생성(순환모터)(2)", num: 2},
+            {label: "조명(7)", num: 7},
+            {label: "관수(8)", num: 8},
+            {label: "수온히터(1)", num: 1},
+            {label: "실내히터(9)", num: 9},
+            {label: "히터밸브(15)", num: 15},
+        ];
+    }, [farmId, house.housId]);
 
     // relay 상태 조회 (polling)
+    // gcTime: 0 → 재배사 전환 시 이전 캐시 즉시 삭제하여 깜빡임 방지
     const {data: relayStatus = {}, isLoading: isRelayLoading, error: relayError} = useQuery({
         queryKey: ["relayStatus", farmId, house.housId],
         queryFn: () => getRelayStatus(farmId, house.housId).then(res => res.data),
         refetchInterval: 5000,
         enabled: !!farmId && !!house.housId,
+        gcTime: 0,
     });
 
     // relay toggle mutation
@@ -64,11 +83,30 @@ export default function RelayDashboard({farmId, house, setSelectedHouse}) {
         onSuccess: () => queryClient.invalidateQueries(["relayStatus", farmId, house.housId]),
     });
 
-    const handleToggleRelay = (relayNum) => {
+    const handleToggleRelay = async (relayNum) => {
         const key = `relay${relayNum}stFlag`;
-        const updatedStatus = {...relayStatus, [key]: !relayStatus[key]};
+        const currentValue = relayStatus[key];
+        const newValue = !currentValue;
+        const updatedStatus = {...relayStatus, [key]: newValue};
+
+        // 토글된 장치 라벨 찾기
+        const item = relayLabels.find(r => r.num === relayNum);
+        const deviceLabel = item ? item.label : `릴레이 ${relayNum}`;
+        const actionLabel = newValue ? "ON" : "OFF";
+
+        // 낙관적 업데이트 + 릴레이 토글
         queryClient.setQueryData(["relayStatus", farmId, house.housId], updatedStatus);
         toggleRelayMutation.mutate(updatedStatus);
+
+        // 수동 모드에서만 AI 판단 팝업 표시
+        if (!house.mnulCtrlFlag) {
+            setToggledDeviceLabel(`${deviceLabel} → ${actionLabel}`);
+            const judgment = await fetchAiJudgment(farmId, house.housId);
+            if (judgment) {
+                setAiJudgment(judgment);
+                setShowAiModal(true);
+            }
+        }
     };
 
     // 수동/자동 모드 mutation
@@ -111,40 +149,7 @@ export default function RelayDashboard({farmId, house, setSelectedHouse}) {
 
     return (
         <div>
-            <Row className="mt-4 d-flex justify-content-center">
-                <Col xs="auto" key={house.housId} className="mb-3">
-                    <Card className={`text-center shadow-sm ${modeCardBorder()}`}>
-                        <Card.Body className="position-relative">
-                            <div style={{position: "absolute", top: "0.2rem", right: "0.35rem", zIndex: 10}}>
-                                <OverlayTrigger
-                                    placement="top"
-                                    overlay={
-                                        <Tooltip id={`tooltip-info`}>
-                                            인공지능: AI가 릴레이를 자동 제어합니다.<br/>
-                                            알고리즘: 센서 기반 알고리즘이 자동 제어합니다.<br/>
-                                            수동제어: 개별 릴레이를 직접 제어할 수 있습니다.
-                                        </Tooltip>
-                                    }
-                                >
-                                    <InfoCircle size={16}/>
-                                </OverlayTrigger>
-                            </div>
-                            <Card.Title className="mb-2">운용방식</Card.Title>
-                            <Form.Select
-                                value={getOperationMode()}
-                                onChange={handleModeChange}
-                                disabled={toggleModeMutation.isPending}
-                                style={{padding: "4px 2.75rem 4px 8px", width: "fit-content", margin: "0 auto"}}
-                            >
-                                <option value="ai">인공지능</option>
-                                <option value="algorithm">알고리즘</option>
-                                <option value="manual">수동제어</option>
-                            </Form.Select>
-                        </Card.Body>
-                    </Card>
-                </Col>
-            </Row>
-            <hr/>
+            {/* 운용방식 카드 숨김 — 상단 그리드에서 선택 */}
             <Row>
                 {relayLabels.map((item) => (
                     <RelayCard
@@ -158,6 +163,14 @@ export default function RelayDashboard({farmId, house, setSelectedHouse}) {
                     />
                 ))}
             </Row>
+
+            {/* AI 판단 팝업 모달 */}
+            <AiJudgmentModal
+                show={showAiModal}
+                onHide={() => setShowAiModal(false)}
+                judgment={aiJudgment}
+                toggledDevice={toggledDeviceLabel}
+            />
         </div>
     );
 }

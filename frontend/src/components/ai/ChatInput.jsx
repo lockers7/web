@@ -1,8 +1,14 @@
-import React from "react";
+import React, {useState} from "react";
 import {Button, Form, Spinner} from "react-bootstrap";
+import VoiceMicButton from "./voice/VoiceMicButton.jsx";
 import "./ChatInput.css";
 
-export default function ChatInput({value, onChange, onSend, isLoading, farmName}) {
+const DEFAULT_PLACEHOLDER = "메시지를 입력하세요... (Shift+Enter: 줄바꿈, Enter: 전송)";
+
+export default function ChatInput({value, onChange, onSend, isLoading, farmName, onStop}) {
+    const [placeholder, setPlaceholder] = useState(DEFAULT_PLACEHOLDER);
+    const [isRecording, setIsRecording] = useState(false);
+
     const handleKeyDown = (e) => {
         if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
@@ -21,17 +27,18 @@ export default function ChatInput({value, onChange, onSend, isLoading, farmName}
                 <Form.Control
                     as="textarea"
                     rows={3}
-                    placeholder="메시지를 입력하세요... (Shift+Enter: 줄바꿈, Enter: 전송)"
+                    placeholder={placeholder}
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
                     onKeyDown={handleKeyDown}
                     disabled={isLoading}
-                    style={{resize: "none", flex: 1, border: "2px solid #28a745"}}
+                    style={{
+                        resize: "none", flex: 1,
+                        border: isRecording ? "2px solid #dc3545" : "2px solid #28a745",
+                        transition: "border-color 0.3s",
+                    }}
                 />
-                <div style={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end"}}>
-                    <div style={{height: "32px", display: "flex", alignItems: "flex-end", justifyContent: "center"}}>
-                        {isLoading && <span className="chat-running-bicycle">🚴</span>}
-                    </div>
+                <div style={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", gap: "4px"}}>
                     <Button
                         variant="success"
                         onClick={onSend}
@@ -40,6 +47,41 @@ export default function ChatInput({value, onChange, onSend, isLoading, farmName}
                     >
                         {isLoading ? <Spinner animation="border" size="sm"/> : "전송"}
                     </Button>
+                    {isLoading ? (
+                        <button
+                            className="voice-mic-btn voice-mic-stop"
+                            onClick={onStop}
+                            title="진행 중지"
+                        >
+                            <span className="stop-square"/>
+                        </button>
+                    ) : (
+                        <VoiceMicButton
+                            onInterimResult={(text) => {
+                                // 실시간 음성 인식 텍스트를 입력창에 표시
+                                onChange(text);
+                            }}
+                            onTranscribed={(text) => {
+                                // 서버 STT 최종 결과로 교체 후 자동 전송
+                                onChange(text);
+                                onSend(text);
+                            }}
+                            onStatusChange={(status) => {
+                                if (status === "recording") {
+                                    setIsRecording(true);
+                                    setPlaceholder("🎤 말씀하세요... 실시간으로 인식됩니다");
+                                } else {
+                                    setIsRecording(false);
+                                    if (status === "processing") {
+                                        setPlaceholder("🔄 음성을 텍스트로 변환 중...");
+                                    } else {
+                                        setPlaceholder(DEFAULT_PLACEHOLDER);
+                                    }
+                                }
+                            }}
+                            disabled={isLoading}
+                        />
+                    )}
                 </div>
             </div>
         </div>

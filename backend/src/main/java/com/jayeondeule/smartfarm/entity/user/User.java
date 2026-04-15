@@ -2,7 +2,6 @@ package com.jayeondeule.smartfarm.entity.user;
 
 import com.jayeondeule.smartfarm.converter.AuthLvelConverter;
 import com.jayeondeule.smartfarm.enums.user.AuthLvel;
-import com.jayeondeule.smartfarm.entity.farm.Farm;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,13 +31,17 @@ public class User {
 
     @Column(nullable = false)
     @Convert(converter = AuthLvelConverter.class)
-    private AuthLvel authLvel = AuthLvel.MONITOR; // 권한 (ADMIN, FARM_ADMIN, HOUS_MANAGER, MONITOR)
+    private AuthLvel authLvel = AuthLvel.FARM_MONITOR; // 권한 (ADMIN, SYS_MONITOR, FARM_ADMIN, FARM_MONITOR)
 
     @Column
     private String hpNo; // 전화번호
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP(6) WITHOUT TIME ZONE")
     private LocalDateTime rgstDttm = LocalDateTime.now(); // 가입일자
+
+    @Setter
+    @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
+    private String dlteYn = "N"; // 삭제여부 (Y/N)
 
     //비밀번호 변경 용도
     public void changePassword(String newPassword) {

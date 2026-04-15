@@ -1,33 +1,29 @@
-HELP.md
+# 빌드 산출물
 target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
 build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+out/
+*.class
+*.original
 
-### VS Code ###
+# 프론트엔드
+node_modules/
+dist/
+dist_old/
+.vite/
+
+# IDE
+.idea/
 .vscode/
+*.iml
+.settings/
+.project
+.classpath
+
+# 로그/임시
+*.log
+*.tmp
+*.swp
+.DS_Store
+
+# 프론트엔드 빌드 산출물 (다양한 이름)
+frontend/dist*/
