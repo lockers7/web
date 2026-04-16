@@ -10,6 +10,10 @@ import HouseRegisterPage from "../pages/house/HouseRegisterPage.jsx";
 import HousePatchPage from "../pages/house/HousePatchPage.jsx";
 import HouseManagementPage from "../pages/house/HouseManagementPage.jsx";
 import UserManagementPage from "../pages/user/UserManagementPage.jsx";
+import PromptBlockManagementPage from "../pages/admin/PromptBlockManagementPage.jsx";
+import RuleCandidatesPage from "../pages/admin/RuleCandidatesPage.jsx";
+import AgentHistoryPage from "../pages/admin/AgentHistoryPage.jsx";
+import ControlPromptManagementPage from "../pages/admin/ControlPromptManagementPage.jsx";
 
 export default function AdminRoutes() {
     return ( //"/assign-farm-roles"
@@ -81,6 +85,38 @@ export default function AdminRoutes() {
                 element={
                     <PrivateRoute>
                         <UserManagementPage/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/prompt-management"
+                element={
+                    <PrivateRoute>
+                        <PromptBlockManagementPage/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/rule-candidates"
+                element={
+                    <PrivateRoute>
+                        <RuleCandidatesPage/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/agent-history"
+                element={
+                    <PrivateRoute>
+                        <AgentHistoryPage/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/control-prompt-management"
+                element={
+                    <PrivateRoute>
+                        <ControlPromptManagementPage/>
                     </PrivateRoute>
                 }
             />
